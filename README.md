@@ -1,5 +1,5 @@
 # QEInstaGib
-Quake Enhanced Rocket-only deathmatch multiplayer mod
+Quake Enhanced InstaGib deathmatch multiplayer mod
 
 # What is it?
 
