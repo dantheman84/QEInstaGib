@@ -91,7 +91,6 @@ void() OneHitKillsTimer =
 
 //GIB STATS
 
-
 void(entity player) tdm_player_checkKillStreak =
 {
     local entity p = world;
@@ -101,19 +100,19 @@ void(entity player) tdm_player_checkKillStreak =
     if (kill_streak == 3 && player.netname != last_spree){ 
         last_spree = player.netname;
 	player.is_onSpree = 1;
-	while((p = findPlayer(p))) { centerprint2(p,player.netname," is on a killing spree!\n"); }  
+	while((p = findPlayer(p))) { centerprint2(p,player.netname,"\n is on a killing spree!\n"); }  
     }
-    else if (kill_streak == 4 && player.netname != last_spree) {	
+    else if (kill_streak == 5 && player.netname != last_spree) {	
         last_spree = player.netname;
-        while((p = findPlayer(p))) { centerprint2(p,player.netname," is on a killing frenzy!\n"); } 
+        while((p = findPlayer(p))) { centerprint2(p,player.netname,"\n is on a killing frenzy!\n"); } 
     }	
-    else if (kill_streak == 5 && player.netname != last_spree) {
+    else if (kill_streak == 7 && player.netname != last_spree) {
 	  last_spree = player.netname;
-	  while((p = findPlayer(p))) { centerprint2(p,player.netname," is on a killing rampage!\n"); }
+	  while((p = findPlayer(p))) { centerprint2(p,player.netname,"\n is on a killing rampage!\n"); }
     }
-    else if (kill_streak == 6 && player.netname != last_spree) {
+    else if (kill_streak == 9 && player.netname != last_spree) {
 	  last_spree = player.netname;
-	  while((p = findPlayer(p))) { centerprint2(p,player.netname," is unstoppable!\n"); }
+	  while((p = findPlayer(p))) { centerprint2(p,player.netname,"\n is unstoppable!\n"); }
     }
 }
 

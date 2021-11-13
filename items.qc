@@ -399,6 +399,13 @@ Deathmatch weapon change rules for picking up a weapon
 void(float old, float new) Deathmatch_Weapon =
 {
 	local float or, nr;
+	
+	//start hook mod
+	if (((self.weapon == IT_AXE) && self.button0))
+	{
+		return;
+	}
+	//end hook mod
 
 // change self.weapon if desired
 	or = RankForWeapon (self.weapon);
