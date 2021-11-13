@@ -673,7 +673,7 @@ void() PlayerDie =
 		self.velocity_z = self.velocity_z + random()*300;
 	
 	//BreakHook();  old hook logic
-	HookVanish(); 	//New hook logic to make sure you don't go back to where you died, if you die
+	//HookVanish(); 	//New hook logic to make sure you don't go back to where you died, if you die
 	
 	if (self.health < 1)
 	{
