@@ -1,4 +1,12 @@
+/*
+old 3 wave hook definitions needed
+*/
+.float on_hook;
+.float hook_out;
+float() crandom;
+void(vector org, vector vel, float damage) SpawnBlood;
 
+// end 3 wave
 
 void() SUB_Null = {};
 

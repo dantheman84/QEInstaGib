@@ -720,9 +720,13 @@ void() PutClientInServer =
 		self.view_ofs = '0 0 22';
 	
 		player_stand1 ();
+		//Begin instagib mod - start with axe and super shotgun
 		self.items = 4098;
 		self.impulse = 3;
 		self.ammo_shells = 999;	
+		self.on_hook = FALSE;
+		self.hook_out = FALSE;
+		//End Instagib mod - 
 
 		makevectors(self.v_angle);
 

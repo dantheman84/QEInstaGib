@@ -1,195 +1,260 @@
+//Decompiled code. Please respect the original copyright.
 
-
-// Maximum length of the hook's chain.
-
-float HOOK_MAX_CHAIN_LEN	= 1600;
-
-// Various other hook constants.
-
-float HOOK_TRAVEL_SPEED		= 2500;
-float HOOK_LINK_COUNT		= 6;
-
-
-void () DrawBeam = 
+void(entity Head) BreakChain =
 {
-   local vector org;
-   org = (self.origin) + '0 0 16';
-   WriteByte(MSG_BROADCAST, SVC_TEMPENTITY);
-   WriteByte(MSG_BROADCAST, TE_LIGHTNING1);
-   WriteEntity(MSG_BROADCAST, world);
-   WriteCoord(MSG_BROADCAST, org_x);
-   WriteCoord(MSG_BROADCAST, org_y);
-   WriteCoord(MSG_BROADCAST, org_z);
-   WriteCoord(MSG_BROADCAST, self.hook.origin_x);
-   WriteCoord(MSG_BROADCAST, self.hook.origin_y);
-   WriteCoord(MSG_BROADCAST, self.hook.origin_z);	
+	local entity link;
+
+	link = Head.goalentity;
+	while ((link != world))
+	{
+		Head = link.goalentity;
+		remove(link);
+		link = Head;
+	}
 };
 
-
-// Updated calculation of link positions
-
-void ()
-LinkPos =
+void() LinkPos =
 {
-	setorigin (self, self.owner.origin
-			+ (self.enemy.origin + PLAYER_WEAPON_OFFSET - self.owner.origin)
-			* self.weapon);
-	self.angles = vectoangles (self.owner.origin - self.enemy.origin);
-	self.nextthink = time + 0.01;
+	makevectors(self.enemy.angles);
+	setorigin(self, (self.owner.origin + ((((self.enemy.origin + ((v_up * FL_INWATER) * !self.enemy.button2)) + (v_forward * FL_INWATER)) - self.owner.origin) * self.weapon)));
+	self.nextthink = (time + 0.1);
 };
 
-
-
-// Creates chain
-
-entity (entity head, entity tail, float num)
-CreateChain =
+entity(entity head, entity tail, float num) MakeChain =
 {
-	local entity link, prevlink;
+	local entity link;
+	local entity prevlink;
 	local float linknum;
 
 	linknum = num;
-	num = num + 1;
+	num = (num + TRUE);
 	prevlink = world;
-	while (linknum > 0)
+	while ((linknum > FALSE))
 	{
-		link = spawn ();
+		link = spawn();
 		link.goalentity = prevlink;
 		prevlink = link;
 		link.owner = head;
 		link.enemy = tail;
-		link.weapon = linknum / num;
+		link.weapon = (linknum / num);
 		link.movetype = MOVETYPE_NOCLIP;
 		link.solid = SOLID_NOT;
-		link.effects = EF_MAYBE_DRAW;
-		setmodel (link, "progs/s_bubble.spr");
-		setsize (link, VEC_ORIGIN, VEC_ORIGIN);
+		link.angles_z = (51 * linknum);
+		link.angles_y = (41 * linknum);
+		link.angles_x = (SVC_FINALE * linknum);
+		link.avelocity = '310 410 510';
+		setmodel (link, "progs/s_spike.mdl");
+		setsize(link, VEC_ORIGIN, VEC_ORIGIN);
+		makevectors(tail.angles);
+		setorigin(link, (head.origin + ((((tail.origin + ((v_up * FL_INWATER) * !tail.button2)) + (v_forward * FL_INWATER)) - head.origin) * link.weapon)));
+		link.nextthink = (time + 0.1);
 		link.think = LinkPos;
-		link.nextthink = time;
-		linknum = linknum - 1;
+		linknum = (linknum - TRUE);
 	}
-	return link;
+	return (link);
 };
 
-void() pull =
+void() HookVanish =
 {
-		if (self.owner.hooking == 1)
+	self.owner.hook_out = FALSE;
+	BreakChain(self);
+	remove(self);
+};
+
+void() UnHookPlayer =
+{
+	local entity oself;
+
+	if (self.hook_out)
+	{
+		oself = self;
+		self = self.goalentity;
+		HookVanish();
+		self = oself;
+	}
+};
+
+void() HookPull =
+{
+	local vector vel;
+	local vector spray;
+	local float v;
+	local float dorg;
+
+	if ((((!self.owner.button0 && (self.owner.weapon == IT_AXE)) || (self.owner.teleport_time > time)) || self.owner.deadflag))
+	{
+		HookVanish();
+		return;
+	}
+	else
+	{
+		if (self.enemy.takedamage)
 		{
-		self.owner.velocity = normalize(self.origin - self.owner.origin);
-		self.owner.velocity = self.owner.velocity * 500;
-		self.think = pull;
-		self.nextthink = time + 0.1;
+			if ((((self.enemy.classname != "player") || !teamplay)))
+			{
+				if (!CanDamage(self.enemy, self.owner))
+				{
+					HookVanish();
+					return;
+				}
+				sound(self, CHAN_WEAPON, "shambler/smack.wav", TRUE, ATTN_NORM);
+				T_Damage(self.enemy, self, self.owner, TRUE);
+				makevectors(self.v_angle);
+				spray_x = (100 * crandom());
+				spray_y = (100 * crandom());
+				spray_z = ((100 * crandom()) + 50);
+				SpawnBlood(self.origin, spray, 20);
+			}
+			if ((self.enemy.solid == SOLID_SLIDEBOX))
+			{
+				self.velocity = VEC_ORIGIN;
+				setorigin(self, ((self.enemy.origin + self.enemy.mins) + (self.enemy.size * 0.5)));
+			}
+			else
+			{
+				self.velocity = self.enemy.velocity;
+			}
 		}
 		else
 		{
-		self.owner.hooking = 0;
-		remove(self);
-		sound (self.owner, CHAN_WEAPON, "weapons/ax1.wav", 1, ATTN_NORM);
-		}	
-};
-
-void() hookdamage =
-{
-if (self.enemy.health > 0)
-{
-	self.owner.velocity = normalize(self.origin - self.owner.origin);
-	self.owner.velocity = self.owner.velocity * 500;
-	
-	T_Damage(self.enemy, self, self.owner, 2);
-
-	self.origin = self.enemy.origin;
-	self.think = hookdamage;
-	self.nextthink = time + 0.1;
-}
-else
-{
-	self.owner.hooking = 0;
-	remove(self);
-	sound (self.owner, CHAN_WEAPON, "weapons/ax1.wav", 1, ATTN_NORM);	
-}
-};
-
-void() BreakHook =
-{
-	if( self.hooking == 1)
-	{
-	remove(self.hook);
-	self.hooking = 0;
-	sound (self, CHAN_WEAPON, "shalrath/attack2.wav", 1, ATTN_NORM);	
+			self.velocity = self.enemy.velocity;
+		}
+		if ((self.enemy.solid == SOLID_NOT))
+		{
+			HookVanish();
+			return;
+		}
+		makevectors(self.owner.angles);
+		vel = (self.origin - ((self.owner.origin + ((v_up * FL_INWATER) * !self.owner.button2)) + (v_forward * FL_INWATER)));
+		v = vlen(vel);
+		if ((v <= 100))
+		{
+			vel = ((normalize(vel) * v) * MOVETYPE_BOUNCE);
+		}
+		if ((v > 100))
+		{
+			vel = (normalize(vel) * 1000);
+		}/*
+		if ((teamplay & TEAM_CAPTURE_CUSTOM))
+		{
+			dorg = vlen((self.owner.origin - self.dest));
+			if (((dorg > MOVETYPE_BOUNCE) && (self.style == MOVETYPE_WALK)))
+			{
+				sound(self.owner, CHAN_WEAPON, ((void())0x21d5i), TRUE, ATTN_NORM);
+				self.style = FL_SWIM;
+			}
+			if (((dorg < MOVETYPE_BOUNCE) && (self.style == FL_SWIM)))
+			{
+				sound(self.owner, CHAN_WEAPON, ((void())0x21e8i), TRUE, ATTN_NORM);
+				self.style = MOVETYPE_WALK;
+			}
+		}*/
+		self.owner.velocity = vel;
+		self.dest = self.owner.origin;
+		self.nextthink = (time + 0.1);
 	}
 };
 
-
-void() PullHook =
+void() T_ChainTouch =
 {
-	
-       // player died
-	if (self.owner.health <= 0)
+	if ((other == self.owner))
 	{
-		BreakHook();
-	}
-	// target died
-	else if (self.enemy != world && ((self.enemy.solid == SOLID_NOT) || (self.enemy.takedamage && self.enemy.health <=0)))
-	{
-		BreakHook();
-	}
-	
-	if (other == self.owner)
 		return;
- 
-
-
-    if (other == world) // Pull
-    {
-            self.solid = SOLID_NOT;
-            self.movetype = MOVETYPE_NONE;
-            self.think = pull;
-            self.nextthink = time;
-      }
-    
-    if (other.takedamage && other.health)
-    {
-            self.think = hookdamage;
-            self.enemy = other;
-            self.solid = SOLID_NOT;
-            self.nextthink = time;
-
-    }
-
-    sound (self.owner, CHAN_WEAPON, "weapons/ax1.wav", 1, ATTN_NORM);
-
-};
-
-
-void () FireHook =
-{
-	local entity hooky;
-	hooky = spawn();
-	setorigin(hooky, self.origin + self.view_ofs);
-	setmodel(hooky, "progs/s_spike.mdl");
-	setsize (hooky, '0 0 0', '0 0 0');
-	hooky.solid = SOLID_BBOX;
-	hooky.movetype = MOVETYPE_FLYMISSILE;
-	makevectors(self.v_angle);
-	self.aiment = hooky;
-	hooky.velocity = v_forward * 2500;
-	hooky.owner = self;
-	self.hook = hooky;
-	hooky.classname = "hookend";
-	self.hooking = 1;
-	hooky.touch = PullHook;
-	//hooky.cansplash = 1; // If my splash tutorial is installed, uncomment this line
-	sound (self, CHAN_WEAPON, "weapons/ax1.wav", 1, ATTN_NORM);	
-	//hooky.goalentity = CreateChain(hooky,self,HOOK_LINK_COUNT);
-	
-};
-
-void() CheckRope =
-{
-	
-	if (self.hooking == 1 && self.hook.classname == "hookend")
-	{
-		DrawBeam();
 	}
+	if ((pointcontents(self.origin) == CONTENT_SKY))
+	{
+		HookVanish();
+		return;
+	}
+	/*
+	if ((((other.classname == "player") && teamplay) && (other.team == self.owner.lastteam)))
+	{
+		return;
+	}*/
+	if (other.takedamage)
+	{
+		if ((other.classname == "player"))
+		{
+			other.axhitme = TRUE;
+		}
+		else
+		{
+			sound(self, CHAN_WEAPON, "weapons/ax1.wav", TRUE, ATTN_NORM);
+		}
+		T_Damage(other, self, self.owner, MOVETYPE_BOUNCE);
+		SpawnBlood(self.origin, self.velocity, MOVETYPE_BOUNCE);
+	}
+	else
+	{
+		sound(self, CHAN_WEAPON, "weapons/ax1.wav", TRUE, ATTN_NORM);
+		self.avelocity = VEC_ORIGIN;
+	}
+	if (!self.owner.button0)
+	{
+		HookVanish();
+		return;
+	}
+	else
+	{
+		if ((other.solid == SOLID_SLIDEBOX))
+		{
+			setorigin(self, ((other.origin + other.mins) + (other.size * 0.5)));
+			self.velocity = VEC_ORIGIN;
+		}
+		else
+		{
+			self.velocity = other.velocity;
+		}
+		self.weapon = (other.nextthink - time);
+		/*
+		if ((teamplay & TEAM_CAPTURE_CUSTOM))
+		{
+			sound(self.owner, CHAN_WEAPON, "weapons/ax1.wav", TRUE, ATTN_NORM);
+		}
+		*/
+		self.style = FL_SWIM;
+		self.enemy = other;
+		self.nextthink = (time + 0.1);
+		self.think = HookPull;
+		self.touch = SUB_Null;
+	}
+};
 
+void() W_FireChain =
+{
+	local entity hook;
+
+	self.hook_out = TRUE;
+	hook = spawn();
+	hook.owner = self;
+	self.goalentity = hook;
+	hook.movetype = MOVETYPE_FLY;
+	hook.solid = SOLID_BBOX;
+	makevectors(self.v_angle);
+	hook.velocity = aim(self, 1000);
+	hook.velocity = (hook.velocity * 1500);
+	hook.angles = vectoangles(hook.velocity);
+	hook.avelocity = '0 0 -500';
+	hook.touch = T_ChainTouch;
+	hook.nextthink = (time + MOVETYPE_FLY);
+	hook.think = HookVanish;
+	/*
+	if ((teamplay & TEAM_CAPTURE_CUSTOM))
+	{
+		setmodel(hook, ((void())0x314bi));
+	}
+	else
+	{*/
+		setmodel(hook, "progs/s_spike.mdl");
+	//}
+	setsize(hook, VEC_ORIGIN, VEC_ORIGIN);
+	setorigin(hook, ((self.origin + (v_forward * FL_INWATER)) + '0 0 16'));
+	/*if ((teamplay & TEAM_CAPTURE_CUSTOM))
+	{
+		sound(self, CHAN_WEAPON, ((void())0x21c2i), TRUE, ATTN_NORM);
+	}*/
+
+		sound(self, CHAN_WEAPON, "weapons/ax1.wav", TRUE, ATTN_NORM);
+
+	hook.goalentity = MakeChain(hook, self, MOVETYPE_WALK);
 };

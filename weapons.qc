@@ -24,7 +24,7 @@ void() W_Precache =
 	precache_sound ("weapons/shotgn2.wav");	// super shotgun
   precache_sound ("enforcer/enfstop.wav"); // laser shot
   precache_sound ("enforcer/enfire.wav"); // laser sizzle
-  precache_model ("progs/lavaball.mdl"); // laser model
+        precache_model ("progs/missile.mdl"); // laser model
 };
 
 float() crandom =
@@ -443,7 +443,7 @@ void(vector org) W_FireSuperShotgun =
     newmis.nextthink = time + 6; // Time before laser disappears
     newmis.think = SUB_Remove;
     newmis.effects = self.effects | EF_DIMLIGHT; // Make it glow a little
-    setmodel (newmis, "progs/lavaball.mdl");
+    setmodel (newmis, "progs/missile.mdl");
     setsize (newmis, '0 0 0', '0 0 0'); 
 	setorigin (newmis, self.origin + v_forward*8 + '0 0 16');
     //setorigin (newmis, self.origin + v_forward*8 + v_right*-3 + '0 0 16'); // make it go a little to the left. 
@@ -462,7 +462,7 @@ void(vector org) W_FireSuperShotgun =
     newmis2.nextthink = time + 6; 
     newmis2.think = SUB_Remove;
     newmis2.effects = self.effects | EF_DIMLIGHT; 
-    setmodel (newmis2, "progs/lavaball.mdl");
+    setmodel (newmis2, "progs/missile.mdl");
     setsize (newmis2, '0 0 0', '0 0 0'); 
     setorigin (newmis2, self.origin + v_forward*8 + '0 0 16');  //make it go a little to the right
     newmis2.velocity = dir * 10000;
@@ -481,7 +481,7 @@ void(vector org) W_FireSuperShotgun =
     newmis3.nextthink = time + 6; 
     newmis3.think = SUB_Remove;
     newmis3.effects = self.effects | EF_DIMLIGHT; 
-    setmodel (newmis3, "progs/lavaball.mdl");
+    setmodel (newmis3, "progs/missile.mdl");
     setsize (newmis3, '0 0 0', '0 0 0'); 
     setorigin (newmis3, self.origin + v_forward*8 + '0 0 16');  //make it go a little to the right
     newmis3.velocity = dir * 10000;    
@@ -499,7 +499,7 @@ void(vector org) W_FireSuperShotgun =
     newmis4.nextthink = time + 6; 
     newmis4.think = SUB_Remove;
     newmis4.effects = self.effects | EF_DIMLIGHT; 
-    setmodel (newmis4, "progs/lavaball.mdl");
+    setmodel (newmis4, "progs/missile.mdl");
     setsize (newmis4, '0 0 0', '0 0 0'); 
     setorigin (newmis4, self.origin + v_forward*8 + '0 0 16');  //make it go a little to the right
     newmis4.velocity = dir * 10000;    
@@ -1072,6 +1072,11 @@ void()	player_shot1;
 void()	player_nail1;
 void()	player_light1;
 void()	player_rocket1;
+//Begin hook mod
+void() player_chain1;
+void() player_chain3;
+//end hook mod
+
 
 void() W_Attack =
 {
@@ -1088,10 +1093,15 @@ void() W_Attack =
 		sound (self, CHAN_WEAPON, "weapons/ax1.wav", 1, ATTN_NORM);
 		
 		
-		if(self.hooking == 1)
-		BreakHook ();
+		if (!self.hook_out)
+		{
+			player_chain1();
+		}
 		else
-		FireHook ();
+		{
+			player_chain3();
+		}
+		self.attack_finished = (time + 0.1);
 		//r = random();
 		//if (r < 0.25)
 		//	FireHook ();

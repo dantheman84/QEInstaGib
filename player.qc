@@ -1,3 +1,8 @@
+//Begin Hook mod
+void() player_chain5;
+void() player_chain4;
+//End Hook mod
+
 
 void() bubble_bob;
 
@@ -169,6 +174,57 @@ void()	player_shot6 =	[$shotatt6, player_run	] {self.weaponframe=6;};
 
 
 //============================================================================
+
+//Begin HOOK Mod
+void() player_chain1 = [ 137, player_chain2 ]
+{
+	self.weaponframe = FL_SWIM;
+};
+
+void() player_chain2 = [ 138, player_chain3 ]
+{
+	self.weaponframe = MOVETYPE_WALK;
+	W_FireChain();
+};
+
+void() player_chain3 = [ 139, player_chain3 ]
+{
+	self.weaponframe = MOVETYPE_WALK;
+	if (!self.hook_out)
+	{
+		player_chain5();
+		return;
+	}
+	if ((vlen(self.velocity) >= 750))
+	{
+		player_chain4();
+		return;
+	}
+};
+
+void() player_chain4 = [ 73, player_chain4 ]
+{
+	self.weaponframe = MOVETYPE_STEP;
+	if (!self.hook_out)
+	{
+		player_chain5();
+		return;
+	}
+	if ((vlen(self.velocity) < 750))
+	{
+		player_chain3();
+		return;
+	}
+};
+
+void() player_chain5 = [ 140, player_run ]
+{
+	self.weaponframe = MOVETYPE_FLY;
+};
+
+// end HOOk Mod
+
+
 
 void() player_nail1   =[$nailatt1, player_nail2  ] 
 {
@@ -616,7 +672,8 @@ void() PlayerDie =
 	if (self.velocity_z < 10)
 		self.velocity_z = self.velocity_z + random()*300;
 	
-	BreakHook();
+	//BreakHook();  old hook logic
+	HookVanish(); 	//New hook logic to make sure you don't go back to where you died, if you die
 	
 	if (self.health < 1)
 	{
