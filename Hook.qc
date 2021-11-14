@@ -98,7 +98,7 @@ void() HookPull =
 					return;
 				}
 				sound(self, CHAN_WEAPON, "shambler/smack.wav", TRUE, ATTN_NORM);
-				T_Damage(self.enemy, self, self.owner, TRUE);
+				T_Damage(self.enemy, self, self.owner, 15);
 				makevectors(self.v_angle);
 				spray_x = (100 * crandom());
 				spray_y = (100 * crandom());
