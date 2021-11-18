@@ -905,7 +905,7 @@ void() CheckRules =
 	}
 	
 	//tdm_game_checkLeaderChange();
-	tdm_player_checkKillStreak(self);
+	check_if_killspree(self);
 	if ((fraglimit && (self.frags >= fraglimit)))
 	{
 		NextLevel();
@@ -1492,9 +1492,7 @@ void(entity targ, entity attacker) ClientObituary =
 {
 
 	// next line is for killing sprees
-if ((targ.is_onSpree == 1)) {targ.is_onSpree = 0; tdm_player_endsKillingSpree(attacker, targ); }
-if ((last_spree = attacker.netname)) {last_spree = "";}
-last_spree = targ.netname; // this is here to work around a bug i dont quite understand yet
+check_if_end_killspree(attacker, targ); // this is here to work around a bug i dont quite understand yet
                            // that causes the kill spree message to show instead of the
                            // ended killing spree message if player on a spree has not made
                            // another kill before being fragged
