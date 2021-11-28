@@ -8,6 +8,15 @@ void(vector org, vector vel, float damage) SpawnBlood;
 
 // end 3 wave
 
+
+//spawn point defs begin - used in client.qc
+
+float IDEAL_DIST_FROM_DM_SPAWN_POINT    = 384;
+float MIN_DIST_FROM_DM_SPAWN_POINT    = 84;
+entity(float forceSpawn) SelectSpawnPoint;
+
+//Spawn point defs end
+
 void() SUB_Null = {};
 
 void() SUB_Remove = {remove(self);};

@@ -455,6 +455,32 @@ void() ClientKill =
 	self.th_die ();//R00k: Reset powerups and drop Backpack
 };
 
+
+
+float(entity point) PlayerVisibleToSpawnPoint =
+{
+	local vector spot1;
+	local vector spot2;
+	local entity player;
+
+	player = find(world, classname, /*64i*/"player");
+	while (player)
+	{
+		if ((player.health > FALSE))
+		{
+			spot1 = point.origin + player.view_ofs;
+			spot2 = player.origin + player.view_ofs;
+			traceline(spot1, spot2, TRUE, point);
+			if ((trace_fraction >= TRUE))
+			{
+				return (TRUE);
+			}
+		}
+		player = find(player, classname, /*64i*/"player");
+	}
+	return (FALSE);
+};
+
 /*R00k: unused
 float(vector v) CheckSpawnPoint =
 {
@@ -568,9 +594,14 @@ SelectSpawnPoint
 Returns the entity to spawn at
 ============
 */
-entity() SelectSpawnPoint =
+entity(float forceSpawn) SelectSpawnPoint =
 {
 	local   entity 	spot;
+	local entity thing;
+	local float numspots;
+	local float totalspots;
+	local float pcount;
+	local entity spots;
 	
 	if (coop)
 	{
@@ -585,7 +616,85 @@ entity() SelectSpawnPoint =
 	}
 	else if (deathmatch)
 	{
-		spot = SelectRandomSpawnPoint ();						// choose a random info_player_deathmatch point
+			spots = world;
+			spot = find(world, classname, /*6605i*/"info_player_deathmatch");
+			while (spot)
+			{
+				totalspots = totalspots + TRUE;
+				thing = findradius(spot.origin, IDEAL_DIST_FROM_DM_SPAWN_POINT);
+				pcount = FALSE;
+				while (thing)
+				{
+					if (((thing.classname == "player") && (thing.health > FALSE)))
+					{
+						pcount = pcount + TRUE;
+					}
+					thing = thing.chain;
+				}
+				if ((pcount == FALSE))
+				{
+					if (PlayerVisibleToSpawnPoint(spot))
+					{
+						pcount = pcount + TRUE;
+					}
+				}
+				if ((pcount == FALSE))
+				{
+					spot.goalentity = spots;
+					spots = spot;
+					numspots = numspots + TRUE;
+				}
+				spot = find(spot, classname, /*6605i*/"info_player_deathmatch");
+			}
+			totalspots = totalspots - TRUE;
+			if ((numspots == FALSE))
+			{
+				spot = find(world, classname, /*6605i*/"info_player_deathmatch");
+				while (spot)
+				{
+					thing = findradius(spot.origin, MIN_DIST_FROM_DM_SPAWN_POINT);
+					pcount = FALSE;
+					while (thing)
+					{
+						if (((thing.classname == "player") && (thing.health > FALSE)))
+						{
+							pcount = pcount + TRUE;
+						}
+						thing = thing.chain;
+					}
+					if ((pcount == FALSE))
+					{
+						spot.goalentity = spots;
+						spots = spot;
+						numspots = numspots + TRUE;
+					}
+					spot = find(spot, classname, /*6605i*/"info_player_deathmatch");
+				}
+			}
+			if (!numspots)
+			{
+				if ((forceSpawn == FALSE))
+				{
+					return (world);
+				}
+				totalspots = rint((random() * totalspots));
+				spot = find(world, classname, /*6605i*/"info_player_deathmatch");
+				while ((totalspots > FALSE))
+				{
+					totalspots = totalspots - TRUE;
+					spot = find(spot, classname, /*6605i*/"info_player_deathmatch");
+				}
+				return (spot);
+			}
+			numspots = numspots - TRUE;
+			numspots = rint((random() * numspots));
+			spot = spots;
+			while ((numspots > FALSE))
+			{
+				spot = spot.goalentity;
+				numspots = numspots - TRUE;
+			}
+			return (spot);
 	}
 
 	if (spot != world)
