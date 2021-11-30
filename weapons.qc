@@ -1462,7 +1462,7 @@ void() ImpulseCommands =
 	if (self.impulse == 255)
 		QuadCheat ();
 
-	if (self.impulse == 220)
+	if (self.impulse == 220 || self.impulse == 225)
 	{
 		//if ((coop)||(deathmatch))
 		{
@@ -1470,7 +1470,7 @@ void() ImpulseCommands =
 		}
 	}
 
-	if (self.impulse == 221)
+	if (self.impulse == 221 || self.impulse == 226)
 	{
         //if ((coop) || (deathmatch))
 		{
