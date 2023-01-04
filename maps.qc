@@ -1,314 +1,97 @@
-//Decompiled code. Please respect the original copyright.
+#define ShowModName 1
+#define ModName "InstaGib"
+
+
+#define FirstDefineMap(_bspname,_maptitle) if(mapname == ##_bspname && title == ##_maptitle) { return ##_maptitle" ("ModName")"; }
+#define DefineMap(_bspname,_maptitle) else FirstDefineMap(_bspname,_maptitle)
+#define OverrideDefineMap(_bspname,_maptitle) else if(mapname == ##_bspname) { return ##_maptitle" ("ModName")"; }
 
 string(string title) GetMapName =
 {
-	if (((mapname == "base32b") && (title == "Base 32")))
-	{
-		return ("Base 32 (InstaGib)");
-	}
-	else
-	{
-		if (((mapname == "death32c") && (title == "Death 32")))
-		{
-			return ("Death 32 (InstaGib)");
-		}
-		else
-		{
-			if (((mapname == "dm1") && (title == "Place of Two Deaths")))
-			{
-				return ("Place of Two Deaths (InstaGib)");
-			}
-			else
-			{
-				if (((mapname == "dm2") && (title == "Claustrophobopolis")))
-				{
-					return ("Claustrophobopolis (InstaGib)");
-				}
-				else
-				{
-					if (((mapname == "dm3") && (title == "The Abandoned Base")))
-					{
-						return ("The Abandoned Base (InstaGib)");
-					}
-					else
-					{
-						if (((mapname == "dm4") && (title == "The Bad Place")))
-						{
-							return ("The Bad Place (InstaGib)");
-						}
-						else
-						{
-							if (((mapname == "dm5") && (title == "The Cistern")))
-							{
-								return ("The Cistern (InstaGib)");
-							}
-							else
-							{
-								if (((mapname == "dm6") && (title == "The Dark Zone")))
-								{
-									return ("The Dark Zone (InstaGib)");
-								}
-								else
-								{
-									if (((mapname == "dm7") && (title == "The Edge")))
-									{
-										return ("The Edge (InstaGib)");
-									}
-									else
-									{
-										if (((mapname == "dm8") && (title == "Acrophobia")))
-										{
-											return ("Acrophobia (InstaGib)");
-										}
-										else
-										{
-											if (((mapname == "e1m1") && (title == "The Slipgate Complex")))
-											{
-												return ("The Slipgate Complex (InstaGib)");
-											}
-											else
-											{
-												if (((mapname == "e1m2") && (title == "Castle of the Damned")))
-												{
-													return ("Castle of the Damned (InstaGib)");
-												}
-												else
-												{
-													if (((mapname == "e1m3") && (title == "The Necropolis")))
-													{
-														return ("The Necropolis (InstaGib)");
-													}
-													else
-													{
-														if (((mapname == "e1m4") && (title == "The Grisly Grotto")))
-														{
-															return ("The Grisly Grotto (InstaGib)");
-														}
-														else
-														{
-															if (((mapname == "e1m5") && (title == "Gloom Keep")))
-															{
-																return ("Gloom Keep (InstaGib)");
-															}
-															else
-															{
-																if (((mapname == "e1m6") && (title == "The Door To Chthon")))
-																{
-																	return ("The Door To Chthon (InstaGib)");
-																}
-																else
-																{
-																	if (((mapname == "e1m7") && (title == "The House of Chthon")))
-																	{
-																		return ("The House of Chthon (InstaGib)");
-																	}
-																	else
-																	{
-																		if (((mapname == "e1m8") && (title == "Ziggurat Vertigo")))
-																		{
-																			return ("Ziggurat Vertigo (InstaGib)");
-																		}
-																		else
-																		{
-																			if (((mapname == "e2m1") && (title == "The Installation")))
-																			{
-																				return ("The Installation (InstaGib)");
-																			}
-																			else
-																			{
-																				if (((mapname == "e2m2") && (title == "The Ogre Citadel")))
-																				{
-																					return ("The Ogre Citadel (InstaGib)");
-																				}
-																				else
-																				{
-																					if (((mapname == "e2m3") && (title == "The Crypt of Decay")))
-																					{
-																						return ("The Crypt of Decay (InstaGib)");
-																					}
-																					else
-																					{
-																						if (((mapname == "e2m4") && (title == "The Ebon Fortress")))
-																						{
-																							return ("The Ebon Fortress (InstaGib)");
-																						}
-																						else
-																						{
-																							if (((mapname == "e2m5") && (title == "The Wizard's Manse")))
-																							{
-																								return ("The Wizard's Manse (InstaGib)");
-																							}
-																							else
-																							{
-																								if (((mapname == "e2m6") && (title == "The Dismal Oubliette")))
-																								{
-																									return ("The Dismal Oubliette (InstaGib)");
-																								}
-																								else
-																								{
-																									if (((mapname == "e2m7") && (title == "The Underearth")))
-																									{
-																										return ("The Underearth (InstaGib)");
-																									}
-																									else
-																									{
-																										if (((mapname == "e3m1") && (title == "Termination Central")))
-																										{
-																											return ("Termination Central (InstaGib)");
-																										}
-																										else
-																										{
-																											if (((mapname == "e3m2") && (title == "The Vaults of Zin")))
-																											{
-																												return ("The Vaults of Zin (InstaGib)");
-																											}
-																											else
-																											{
-																												if (((mapname == "e3m3") && (title == "The Tomb of Terror")))
-																												{
-																													return ("The Tomb of Terror (InstaGib)");
-																												}
-																												else
-																												{
-																													if (((mapname == "e3m4") && (title == "Satan's Dark Delight")))
-																													{
-																														return ("Satan's Dark Delight (InstaGib)");
-																													}
-																													else
-																													{
-																														if (((mapname == "e3m5") && (title == "The Wind Tunnels")))
-																														{
-																															return ("The Wind Tunnels (InstaGib)");
-																														}
-																														else
-																														{
-																															if (((mapname == "e3m6") && (title == "Chambers of Torment")))
-																															{
-																																return ("Chambers of Torment (InstaGib)");
-																															}
-																															else
-																															{
-																																if (((mapname == "e3m7") && (title == "The Haunted Halls")))
-																																{
-																																	return ("The Haunted Halls (InstaGib)");
-																																}
-																																else
-																																{
-																																	if (((mapname == "e4m1") && (title == "The Sewage System")))
-																																	{
-																																		return ("The Sewage System (InstaGib)");
-																																	}
-																																	else
-																																	{
-																																		if (((mapname == "e4m2") && (title == "The Tower of Despair")))
-																																		{
-																																			return ("The Tower of Despair (InstaGib)");
-																																		}
-																																		else
-																																		{
-																																			if (((mapname == "e4m3") && (title == "The Elder God Shrine")))
-																																			{
-																																				return ("The Elder God Shrine (InstaGib)");
-																																			}
-																																			else
-																																			{
-																																				if (((mapname == "e4m4") && (title == "The Palace of Hate")))
-																																				{
-																																					return ("The Palace of Hate (InstaGib)");
-																																				}
-																																				else
-																																				{
-																																					if (((mapname == "e4m5") && (title == "Hell's Atrium")))
-																																					{
-																																						return ("Hell's Atrium (InstaGib)");
-																																					}
-																																					else
-																																					{
-																																						if (((mapname == "e4m6") && (title == "The Pain Maze")))
-																																						{
-																																							return ("The Pain Maze (InstaGib)");
-																																						}
-																																						else
-																																						{
-																																							if (((mapname == "e4m7") && (title == "Azure Agony")))
-																																							{
-																																								return ("Azure Agony (InstaGib)");
-																																							}
-																																							else
-																																							{
-																																								if (((mapname == "e4m8") && (title == "The Nameless City")))
-																																								{
-																																									return ("The Nameless City (InstaGib)");
-																																								}
-																																								else
-																																								{
-																																									if (((mapname == "end") && (title == "Shub-Niggurath's Pit")))
-																																									{
-																																										return ("Shub-Niggurath's Pit (InstaGib)");
-																																									}
-																																									else
-																																									{
-																																										if (((mapname == "start") && (title == "Introduction")))
-																																										{
-																																											return ("Introduction (InstaGib)");
-																																										}
-																																										else
-																																										{
-																																										if (((mapname == "hipend") && (title == "Armagon's Lair")))
-																																										{
-																																											return ("Armagon's Lair (InstaGib)");
-																																										}
-																																										else
-																																										{
-																																																																																				if (((mapname == "e5dm") && (title == "The Theater of Doom")))
-																																										{
-																																											return ("The Theater of Doom (InstaGib)");
-																																										}
-																																										
-																																									}
-																																										}
+    #if ShowModName == 1
 
-																																									
-																																									}
-																																								}
-																																							}
-																																						}
-																																					}
-																																				}
-																																			}
-																																		}
-																																	}
-																																}
-																															}
-																														}
-																													}
-																												}
-																											}
-																										}
-																									}
-																								}
-																							}
-																						}
-																					}
-																				}
-																			}
-																		}
-																	}
-																}
-															}
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	return (title);
-};
+    // Id1 maps
+	FirstDefineMap("base32b","Base 32")
+    DefineMap("death32c","Death 32")
+    DefineMap("dm1","Place of Two Deaths")
+    DefineMap("dm2","Claustrophobopolis")
+    DefineMap("dm3","The Abandoned Base")
+    DefineMap("dm4","The Bad Place")
+    DefineMap("dm5","The Cistern")
+    DefineMap("dm6","The Dark Zone")
+    DefineMap("dm7","The Edge")
+    DefineMap("dm8","Acrophobia")
+    DefineMap("e1m1","The Slipgate Complex")
+    DefineMap("e1m2","Castle of the Damned")
+    DefineMap("e1m3","The Necropolis")
+    DefineMap("e1m4","The Grisly Grotto")
+    DefineMap("e1m5","Gloom Keep")
+    DefineMap("e1m6","The Door To Chthon")
+    DefineMap("e1m7","The House of Chthon")
+    DefineMap("e1m8","Ziggurat Vertigo")
+    DefineMap("e2m1","The Installation")
+    DefineMap("e2m2","The Ogre Citadel")
+    DefineMap("e2m3","The Crypt of Decay")
+    DefineMap("e2m4","The Ebon Fortress")
+    DefineMap("e2m5","The Wizard's Manse")
+    DefineMap("e2m6","The Dismal Oubliette")
+    DefineMap("e2m7","The Underearth")
+    DefineMap("e3m1","Termination Central")
+    DefineMap("e3m2","The Vaults of Zin")
+    DefineMap("e3m3","The Tomb of Terror")
+    DefineMap("e3m4","Satan's Dark Delight")
+    DefineMap("e3m5","The Wind Tunnels")
+    DefineMap("e3m6","Chambers of Torment")
+    DefineMap("e3m7","The Haunted Halls")
+    DefineMap("e4m1","The Sewage System")
+    DefineMap("e4m2","The Tower of Despair")
+    DefineMap("e4m3","The Elder God Shrine")
+    DefineMap("e4m4","The Palace of Hate")
+    DefineMap("e4m5","Hell's Atrium")
+    DefineMap("e4m6","The Pain Maze")
+    DefineMap("e4m7","Azure Agony")
+    DefineMap("e4m8","The Nameless City")
+    DefineMap("end","Shub-Niggurath's Pit")
+    DefineMap("start","Introduction")
+    //DOTM maps
+    DefineMap("hub","The Machine")
+    DefineMap("mge1m1","The Pain Drain")
+    DefineMap("mge1m2","The Wishing Well")
+    DefineMap("mge1m3","Sandy's Room")
+    DefineMap("mge2m1","Acid Sanctuary")
+    DefineMap("mge2m2","Fading Embers")
+    DefineMap("mge3m1","Down the Waste")
+    DefineMap("mge3m2","Hell or Dark Water")
+    DefineMap("mge4m1","Grave Machine")
+    DefineMap("mge4m2","A Grave Mistake")
+    DefineMap("mge5m1","Nazard Terminal")
+    DefineMap("mge5m2","Too Deep, Too Greedy")
+    DefineMap("mgend","Chthon's Vengeance")
+    DefineMap("start","Introduction")
+    DefineMap("horde1","Tower of the Apprentice")
+    DefineMap("horde2","Frozen Court")
+    DefineMap("horde3","The Foundry")
+    DefineMap("horde4","The Hunt")
+    DefineMap("horde5","Relic")
+    DefineMap("horde6","The Trial")
+    DefineMap("horde7","The Tech Spire")
+    DefineMap("mgdm1","Art of the Condemned")
+    DefineMap("mgdm2","The Bad Space")
+    DefineMap("mgdm4","The Boiler")
+    DefineMap("mgdm3","The Mustard Factory")
+    
+    
+    
+    
+    
+	OverrideDefineMap("test/mals_combatbox","Mal's Combatbox")
+	OverrideDefineMap("test/test_shadow","Shadow's Arena")
+	OverrideDefineMap("test/test_aiming","Box Arena")
+	OverrideDefineMap("test/test_obstacles","Obstacle Course")
+
+    #endif
+
+	// Default
+	return title;
+
+}
