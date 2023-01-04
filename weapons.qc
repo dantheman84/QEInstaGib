@@ -402,8 +402,6 @@ void() LaserHit =
  
 };
 
-
-
 void(vector org) W_FireSuperShotgun =
 {
     local vector dir; 
@@ -426,6 +424,7 @@ void(vector org) W_FireSuperShotgun =
     if (n > 2 ) sound (self, CHAN_WEAPON, "weapons/ric3.wav",1,ATTN_NORM);
     
 
+
     newmis = spawn ();
     newmis.owner = self;
     newmis.movetype = MOVETYPE_FLYMISSILE;
@@ -433,7 +432,7 @@ void(vector org) W_FireSuperShotgun =
     newmis.solid = SOLID_BBOX;
     newmis.classname     = "slug";
 
-    dir = aim (self, 10000);
+    dir = aim (self, 25000 );
     newmis.angles = vectoangles(dir);
     
     //newmis.goalentity = CreateChain(newmis,self,HOOK_LINK_COUNT); //bubble trail like railgun
@@ -447,14 +446,14 @@ void(vector org) W_FireSuperShotgun =
     setsize (newmis, '0 0 0', '0 0 0'); 
 	setorigin (newmis, self.origin + v_forward*8 + '0 0 16');
     //setorigin (newmis, self.origin + v_forward*8 + v_right*-3 + '0 0 16'); // make it go a little to the left. 
-    newmis.velocity = dir * 10000;
+    newmis.velocity = dir * 25000 ;
 // What are you gonna see next is just a copy of whats above but with all the newmis renamed to newmis2 and all the dir renamed to dir2.
     newmis2 = spawn ();
     newmis2.owner = self;
     newmis2.movetype = MOVETYPE_FLYMISSILE;
     newmis2.solid = SOLID_BBOX;
 
-    dir2 = aim (self, 10000);
+    dir2 = aim (self, 25000 );
     newmis2.angles = vectoangles(dir2);
 
     newmis2.touch = LaserHit;
@@ -465,7 +464,7 @@ void(vector org) W_FireSuperShotgun =
     setmodel (newmis2, "progs/missile.mdl");
     setsize (newmis2, '0 0 0', '0 0 0'); 
     setorigin (newmis2, self.origin + v_forward*8 + '0 0 16');  //make it go a little to the right
-    newmis2.velocity = dir * 10000;
+    newmis2.velocity = dir * 25000 ;
     
 // What are you gonna see next is just a copy of whats above but with all the newmis renamed to newmis3 and all the dir renamed to dir3.
     newmis3 = spawn ();
@@ -473,7 +472,7 @@ void(vector org) W_FireSuperShotgun =
     newmis3.movetype = MOVETYPE_FLYMISSILE;
     newmis3.solid = SOLID_BBOX;
 
-    dir3 = aim (self, 10000);
+    dir3 = aim (self, 25000 );
     newmis3.angles = vectoangles(dir3);
 
     newmis3.touch = LaserHit;
@@ -484,14 +483,14 @@ void(vector org) W_FireSuperShotgun =
     setmodel (newmis3, "progs/missile.mdl");
     setsize (newmis3, '0 0 0', '0 0 0'); 
     setorigin (newmis3, self.origin + v_forward*8 + '0 0 16');  //make it go a little to the right
-    newmis3.velocity = dir * 10000;    
+    newmis3.velocity = dir * 25000 ;    
 // What are you gonna see next is just a copy of whats above but with all the newmis renamed to newmis4 and all the dir renamed to dir4.
     newmis4 = spawn ();
     newmis4.owner = self;
     newmis4.movetype = MOVETYPE_FLYMISSILE;
     newmis4.solid = SOLID_BBOX;
 
-    dir4 = aim (self, 10000);
+    dir4 = aim (self, 25000 );
     newmis4.angles = vectoangles(dir4);
 
     newmis4.touch = LaserHit;
@@ -502,7 +501,77 @@ void(vector org) W_FireSuperShotgun =
     setmodel (newmis4, "progs/missile.mdl");
     setsize (newmis4, '0 0 0', '0 0 0'); 
     setorigin (newmis4, self.origin + v_forward*8 + '0 0 16');  //make it go a little to the right
-    newmis4.velocity = dir * 10000;    
+    newmis4.velocity = dir * 25000 ;  
+
+
+//kilomiles railjump logic
+local vector src2;
+src2 = self.origin + '0 0 16' + v_forward*16;
+makevectors(self.v_angle);
+
+    
+
+    
+    local vector velo_norm;
+    local vector face_norm;
+    local vector v_ang;
+    local vector xy_vel;
+    
+    
+ 
+     v_ang = vectoangles (v_forward*(-1));
+    
+    velo_norm = normalize(self.velocity);                
+    face_norm = normalize(v_forward);
+    
+    
+xy_vel = self.velocity;
+xy_vel_z = 0;
+ 
+ 
+if(v_ang_x > 60 && v_ang_x < 120)
+{
+	if (vlen(trace_endpos - src2) < 130 && self.flags & FL_ONGROUND  && vlen(self.velocity) > 300) 
+	{
+	self.velocity = self.velocity - dir*750;   //RAIL 711
+	}		
+	
+	else if (!(self.flags & FL_ONGROUND))
+	{
+		
+		
+		if (self.jump_flag <= 0 && self.jump_flag > -300) 
+		{
+			self.velocity = self.velocity - dir*(600+((-1)*self.jump_flag));	
+		}
+		if (self.jump_flag > 0) 
+		{
+			self.velocity = self.velocity - dir*600;  
+		}
+	}
+	
+	else if (!(self.flags & FL_ONGROUND)) 
+	{
+		self.velocity = self.velocity - dir*500; 
+	}
+}
+   
+ 
+ 
+if(velo_norm * face_norm<-0.25)                          //dont rail jump if facing the same direction as velocity vector   //7-16
+{
+	
+	if (!(self.flags & FL_ONGROUND))
+	{
+		self.velocity = self.velocity - dir*500;        //Rail jump
+	}
+
+   
+}
+
+
+W_FireRail();
+  
 };
 
 

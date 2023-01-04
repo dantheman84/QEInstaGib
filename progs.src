@@ -9,6 +9,7 @@ combat.qc
 hook.qc
 OneShotKills.qc
 items.qc
+railgun.qc    //kilomiles railgun logic
 weapons.qc
 world.qc
 spectate.qc		// R00k: Modified from QuakeWorld GPL
