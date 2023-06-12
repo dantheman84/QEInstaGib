@@ -288,8 +288,8 @@ void() IntermissionThink =
 	if (time < intermission_exittime)
 		return;
 
-	if (!self.button0 && !self.button1 && !self.button2)
-		return;
+	if ((time < intermission_exittime+5) && !self.button0 && !self.button1 && !self.button2)
+        return;
 	
 	ExitIntermission ();
 };
@@ -410,7 +410,7 @@ void() trigger_changelevel =
 */
 
 void() set_suicide_frame;
-void (entity ent) CreateDeadBody;//Inspired by DPMOD
+//void (entity ent) CreateDeadBody;//Inspired by DPMOD
 
 // called by ClientKill and DeadThink
 void() respawn =
@@ -420,7 +420,7 @@ void() respawn =
 	if ((coop)||(deathmatch))
 	{
 		// make a copy of the dead body for appearances sake
-		CreateDeadBody (self);//R00k
+		CopyToBodyQueue (self);
 		
 		// respawn		
 		PutClientInServer ();
@@ -1585,10 +1585,11 @@ void() ClientDisconnect =
 	if (deathmatch || coop)
 		DropBackpack();
 
+	self->effects = 0;
 	set_suicide_frame();
 
-	if (self.spectator & (SPEC_FREEMOVE|SPEC_EYECAM))
-		SpectatorDisconnect();
+	//if (self.spectator & (SPEC_FREEMOVE|SPEC_EYECAM))
+	//	SpectatorDisconnect();
 }
 /*
 ===========
